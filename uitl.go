@@ -92,20 +92,39 @@ func Serve() {
 	})
 }
 
-func Increase(key string, types ...string) {
-	if value, ok := su.metrics.Load(key); ok {
-		switch value.(type) {
+func Add(key string, value float64, types ...string) {
+	if metric, ok := su.metrics.Load(key); ok {
+		switch metric.(type) {
 		case prometheus.Gauge:
-			value.(prometheus.Gauge).Inc()
+			metric.(prometheus.Gauge).Add(value)
 		case *prometheus.GaugeVec:
 			if types != nil {
-				value.(*prometheus.GaugeVec).WithLabelValues(types...).Inc()
+				metric.(*prometheus.GaugeVec).WithLabelValues(types...).Add(value)
 			}
 		case prometheus.Counter:
-			value.(prometheus.Counter).Inc()
+			metric.(prometheus.Counter).Add(value)
 		case *prometheus.CounterVec:
 			if types != nil {
-				value.(*prometheus.CounterVec).WithLabelValues(types...).Inc()
+				metric.(*prometheus.CounterVec).WithLabelValues(types...).Add(value)
+			}
+		}
+	}
+}
+
+func Increase(key string, types ...string) {
+	if metric, ok := su.metrics.Load(key); ok {
+		switch metric.(type) {
+		case prometheus.Gauge:
+			metric.(prometheus.Gauge).Inc()
+		case *prometheus.GaugeVec:
+			if types != nil {
+				metric.(*prometheus.GaugeVec).WithLabelValues(types...).Inc()
+			}
+		case prometheus.Counter:
+			metric.(prometheus.Counter).Inc()
+		case *prometheus.CounterVec:
+			if types != nil {
+				metric.(*prometheus.CounterVec).WithLabelValues(types...).Inc()
 			}
 		}
 	}
@@ -141,7 +160,7 @@ func Get(name string) (value interface{}, ok bool) {
 	return su.metrics.Load(name)
 }
 
-func AddGauge(name string, types ...string) {
+func SetGauge(name string, types ...string) {
 	if types == nil {
 		newGauge := prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: ns,
@@ -161,7 +180,7 @@ func AddGauge(name string, types ...string) {
 	}
 }
 
-func AddCounter(name string, types ...string) {
+func SetCounter(name string, types ...string) {
 	if types == nil {
 		newCounter := prometheus.NewCounter(prometheus.CounterOpts{
 			Namespace: ns,
@@ -181,7 +200,7 @@ func AddCounter(name string, types ...string) {
 	}
 }
 
-func AddSummary(name string, types ...string) {
+func SetSummary(name string, types ...string) {
 	if types == nil {
 		newSummary := prometheus.NewSummary(prometheus.SummaryOpts{
 			Namespace: ns,
@@ -202,7 +221,7 @@ func AddSummary(name string, types ...string) {
 	}
 }
 
-func AddHistogram(name string, buckets []float64, types ...string) {
+func SetHistogram(name string, buckets []float64, types ...string) {
 	if types == nil {
 		newHistogram := prometheus.NewHistogram(prometheus.HistogramOpts{
 			Namespace: ns,
