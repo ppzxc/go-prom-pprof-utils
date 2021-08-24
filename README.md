@@ -1,5 +1,5 @@
 # example
-```go
+```
 package main
 
 import (
@@ -31,12 +31,12 @@ func main() {
 		panic(err)
 	}
 
-	su.AddGauge("fill", nil)
-	su.AddGauge("session", []string{"type"})
-	su.AddCounter("fill2", nil)
-	su.AddCounter("session2", []string{"type"})
-	su.AddHistogram("fill3", []float64{0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.5, 1, 5, 10, 20, 30}, nil)
-	su.AddHistogram("session3", []float64{0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.5, 1, 5, 10, 20, 30}, []string{"type", "query", "dd"})
+	su.AddGauge("fill")
+	su.AddGauge("session", "type")
+	su.AddCounter("fill2")
+	su.AddCounter("session2", "type")
+	su.AddHistogram("fill3", []float64{0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.5, 1, 5, 10, 20, 30})
+	su.AddHistogram("session3", []float64{0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.5, 1, 5, 10, 20, 30}, "type", "query", "dd")
 
 	go func() {
 		for {

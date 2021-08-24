@@ -137,7 +137,11 @@ func IncreaseHistogram(key string, startTime time.Time, types ...string) {
 	}
 }
 
-func AddGauge(name string, types []string) {
+func Get(name string) (value interface{}, ok bool) {
+	return su.metrics.Load(name)
+}
+
+func AddGauge(name string, types ...string) {
 	if types == nil {
 		newGauge := prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: ns,
@@ -157,7 +161,7 @@ func AddGauge(name string, types []string) {
 	}
 }
 
-func AddCounter(name string, types []string) {
+func AddCounter(name string, types ...string) {
 	if types == nil {
 		newCounter := prometheus.NewCounter(prometheus.CounterOpts{
 			Namespace: ns,
@@ -177,7 +181,7 @@ func AddCounter(name string, types []string) {
 	}
 }
 
-func AddSummary(name string, types []string) {
+func AddSummary(name string, types ...string) {
 	if types == nil {
 		newSummary := prometheus.NewSummary(prometheus.SummaryOpts{
 			Namespace: ns,
@@ -198,7 +202,7 @@ func AddSummary(name string, types []string) {
 	}
 }
 
-func AddHistogram(name string, buckets []float64, types []string) {
+func AddHistogram(name string, buckets []float64, types ...string) {
 	if types == nil {
 		newHistogram := prometheus.NewHistogram(prometheus.HistogramOpts{
 			Namespace: ns,
